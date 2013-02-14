@@ -222,7 +222,7 @@
          * If useProxy init var is true OR is hosted HTML5 (stackmobapp.com)
          * then use relative path for API proxy
          */
-        return StackMob.apiURL || (window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')) + '/')
+        return StackMob.apiURL || (window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')) + '/');
       } else { // Use absolute path and operate through CORS
         return StackMob.apiURL || (this.getScheme() + '://' + StackMob['API_SERVER'] + '/');
       }

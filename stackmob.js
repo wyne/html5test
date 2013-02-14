@@ -217,7 +217,7 @@
     },
     //This is an internally used method to get the API URL no matter what the context - development, production, etc.  This envelopes `getDevAPIBase` and `getProdAPIBase` in that this method is smart enough to choose which of the URLs to use.
     getBaseURL : function() {
-      if( StackMob['useProxy'] || window.location.hostname.indexOf(this.appName + '.' + this.clientSubdomain + '.stackmobapp.com/') > 0 ){
+      if( StackMob['useProxy'] || window.location.hostname.indexOf(this.appName + '.' + this.clientSubdomain + '.stackmobapp.com') > 0 ){
         /*
          * If useProxy init var is true OR is hosted HTML5 (stackmobapp.com)
          * then use relative path for API proxy

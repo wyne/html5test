@@ -1,0 +1,57 @@
+var q = new StackMob.Collection.Query();
+var isBodie = new StackMob.Collection.Query();
+var isNola = new StackMob.Collection.Query();
+
+A: name == "bodie"
+B: age == "3"
+C: name == "nola"
+
+
+var isDog   = new StackMob.Collection.Query().equals("species", "dog");
+  params = {
+    species: "dog"
+  }
+var isBodie = new StackMob.Collection.Query().equals("name", "bodie").equals("age", "3");
+  params = {
+    name: "bodie",
+    age: "3"
+  }
+var isNola  = new StackMob.Collection.Query().equals("name", "nola");
+  params = {
+    name: "nola"
+  }
+
+// ( isDoc && isBodie ) || isNola
+var q = ( isDog.and(isBodie) ).or( isNola );
+
+
+var locationArray = [];
+var max = howMany - 1;
+
+for (var i = 0; i < max; ++i) {
+  locationArray.push(initLocation + i);
+}
+
+users.query(q, {
+  success : function(collection) {
+    // for (var i = 0; i < collection.models.length; ++i) {
+    //   for (var j = 0; j < locationArray.length; ++j) {
+    //     if (collection.models[i]['attributes']['location'] === locationArray[j]) {
+    //       count++;
+    //     }
+    //   }
+    // }
+  }
+});
+
+waitsFor(function() {
+  return count === (howMany - 1);
+}, "finish checking all the users fetched", howMany * 1000);
+
+runs(function() {
+  expect(count).toEqual(howMany - 1);
+
+});
+
+// This function uses 'equals' query
+deleteMultipleCreatedUsers(howMany);

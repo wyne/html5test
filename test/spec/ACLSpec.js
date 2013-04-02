@@ -248,18 +248,18 @@ var makeACLTest = function( opt ){
 describe("Access Control Lists", function(){
 
 	// Open
-	makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE.SUCCESS });
-	makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE.SUCCESS });
-	makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE.SUCCESS });
-	makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE.SUCCESS });
-	makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_open', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE.SUCCESS });
 
 	// Private Key (only testing negative case)
-	makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_private_key', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE._401 });
 
 	// Logged In User
 	makeACLTest({ schema: 'perm_logged_in_any', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
@@ -269,25 +269,25 @@ describe("Access Control Lists", function(){
 	makeACLTest({ schema: 'perm_logged_in_any', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE.SUCCESS });
 
 	// SM_Owner
-	makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._404 });
-	makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE._404 });
-	makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE.SUCCESS });
-	makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE._404 });
+	// makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._404 });
+	// makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE._404 });
+	// makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_logged_in_owner', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE._404 });
 
 	// Role
-	makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE.SUCCESS });
-	makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_logged_in_role', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE._401 });
 
 	// Relationship
-	makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
-	makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._404 });
-	makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE._404 });
-	makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE._404 });
-	makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE.SUCCESS });
+	// makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._401 });
+	// makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.ANY, expectation: HTTP_RESPONSE._404 });
+	// makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.ROLE, expectation: HTTP_RESPONSE._404 });
+	// makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.OWNER, expectation: HTTP_RESPONSE._404 });
+	// makeACLTest({ schema: 'perm_logged_in_relationship', loginType: LOGIN_TYPE.RELATIONSHIP, expectation: HTTP_RESPONSE.SUCCESS });
 
 	// Not Allowed
 	makeACLTest({ schema: 'perm_not_allowed', loginType: LOGIN_TYPE.NONE, expectation: HTTP_RESPONSE._405 });

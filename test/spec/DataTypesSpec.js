@@ -89,13 +89,8 @@ describe("Stored data types", function() {
 				//should never reach here
 			},
 			error: function(model, failure) {
-				console.log("model");
-				console.log(model);
-				console.log("failure");
-				console.log(failure);
-
 				failureObject = failure;
-				
+
 				userToFetch.fetch({
 					success: function(model) {
 						var fetchedUsrName = model['attributes']['username'];

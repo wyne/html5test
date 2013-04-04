@@ -35,21 +35,21 @@
     DEFAULT_LOGIN_FIELD : 'username',
     DEFAULT_PASSWORD_FIELD : 'password',
 
-    //Radians are defined for use with the geospatial methods.
+    // Radians are defined for use with the geospatial methods.
     EARTH_RADIANS_MI : 3956.6,
     EARTH_RADIANS_KM : 6367.5,
 
-    //Backbone.js will think you're updating an object if you provide an ID.  This flag is used internally in the JS SDK to force a POST rather than a PUT if you provide an object ID.
+    // Backbone.js will think you're updating an object if you provide an ID.  This flag is used internally in the JS SDK to force a POST rather than a PUT if you provide an object ID.
     FORCE_CREATE_REQUEST : 'stackmob_force_create_request',
 
-    //These constants are used internally in the JS SDK to help with queries involving arrays.
+    // These constants are used internally in the JS SDK to help with queries involving arrays.
     ARRAY_FIELDNAME : 'stackmob_array_fieldname',
     ARRAY_VALUES : 'stackmob_array_values',
 
-    //This flag is used internally in the JS SDK to help with deletion of objects in relationships.
+    // This flag is used internally in the JS SDK to help with deletion of objects in relationships.
     CASCADE_DELETE : 'stackmob_cascade_delete',
 
-    //These constants are intended for public use to help with deletion of objects in relationships.
+    // These constants are intended for public use to help with deletion of objects in relationships.
     HARD_DELETE : true,
     SOFT_DELETE : false,
 
@@ -72,15 +72,15 @@
     // Never use HTTPS
     SECURE_NEVER: "NEVER",
 
-    //This specifies the server-side API this instance of the JS SDK should point to.  It's set to the Development environment (0) by default.  This should be over-ridden when the user initializes their StackMob instance.
+    // This specifies the server-side API this instance of the JS SDK should point to.  It's set to the Development environment (0) by default.  This should be over-ridden when the user initializes their StackMob instance.
     apiVersion : 0,
 
-    //The current version of the JS SDK.
+    // The current version of the JS SDK.
     sdkVersion : "0.9.0",
 
-    //This holds the application public key when the JS SDK is initialized to connect to StackMob's services via OAuth 2.0.
+    // This holds the application public key when the JS SDK is initialized to connect to StackMob's services via OAuth 2.0.
     publicKey : null,
-    
+
     /**
      * The Storage object lives within the StackMob object and provides an abstraction layer for client storage.  It's intended for internal use within the JS SDK.  The JS SDK is currently using HTML5's Local Storage feature to persist key/value items.
      */
@@ -259,12 +259,12 @@
 
       return creds;
     },
-    
+
     //Why have this?  So that we can overwrite the expire time via _.extend(StackMob, { _stubbedExpireTime: ... }) for tests
     _stubbedExpireTime: function(expires) {
       return expires;
     },
-    
+
     //Saves the OAuth 2.0 credentials (passed in as JSON) to client storage.
     saveOAuthCredentials : function(creds) {
       var accessToken = creds['oauth2.accessToken'];
@@ -314,7 +314,7 @@
         var originalSuccess = options['success'];
         options['success'] = function(input){
           var creds = StackMob.getOAuthCredentials();
-          
+
           var loginField =  (creds['oauth2.userSchemaInfo'] && creds['oauth2.userSchemaInfo']['loginField']) ? 
             creds['oauth2.userSchemaInfo']['loginField'] : StackMob['loginField'];
           originalSuccess( input[loginField]);
@@ -349,7 +349,7 @@
     hasExpiredOAuth : function() {
       return this.isOAuth2Mode() && (this.getOAuthExpireTime() == null) || (this.getOAuthExpireTime() <= (new Date()).getTime())
     },
-    
+
     clearOAuthCredentials : function() {
       StackMob.Storage.remove(StackMob.loggedInUserKey);
       StackMob.Storage.remove('oauth2.accessToken');
@@ -359,7 +359,7 @@
       StackMob.Storage.remove('oauth2.user');
       StackMob.Storage.remove('oauth2.userSchemaInfo');
     },
-    
+
     //Retrieve the OAuth 2.0 credentials from client storage.
     getOAuthCredentials : function() {
       var oauth_accessToken = StackMob.Storage.retrieve('oauth2.accessToken');
@@ -368,7 +368,7 @@
       var oauth_refreshToken = StackMob.Storage.retrieve(StackMob.REFRESH_TOKEN_KEY);
       var userSchemaInfo = StackMob.Storage.retrieve('oauth2.userSchemaInfo');
       var oauth_schema = null;
-      
+
       try {
         oauth_schema = JSON.parse(userSchemaInfo);
       } catch (e) { /* Harmless if this fails (in theory!)*/ }
@@ -381,12 +381,12 @@
           'oauth2.userSchemaInfo' : oauth_schema
         };
         creds[StackMob.REFRESH_TOKEN_KEY] = oauth_refreshToken;
-        
+
         return creds;
       } else {
         return {};
       }
-      
+
     },
     //Returns the date (in milliseconds) for when the current user's OAuth 2.0 credentials expire.
     getOAuthExpireTime : function() {
@@ -423,6 +423,7 @@
       "unlinkUserFromFacebook"          : "DELETE",
 
       "gigyaAccessToken"                : "POST",
+      "linkUserWithGigya"               : "POST",
       "unlinkUserFromGigya"             : "DELETE"
     },
 
@@ -446,22 +447,32 @@
       this.initStart(options);
 
       /* DEPRECATED METHODS BELOW */
-      this.userSchema = options['userSchema']; //DEPRECATED: USED StackMob.User.extend({ schemaName: 'customschemaname' });
-      this.loginField = options['loginField']; //DEPRECATED: USED StackMob.User.extend({ loginField: 'customloginfield' });
-      this.passwordField = options['passwordField']; //DEPRECATED: USED StackMob.User.extend({ passwordField: 'custompasswordfield' });
+      this.userSchema = options['userSchema'];        // DEPRECATED: Use StackMob.User.extend({ schemaName: 'customschemaname' });
+      this.loginField = options['loginField'];        // DEPRECATED: Use StackMob.User.extend({ loginField: 'customloginfield' });
+      this.passwordField = options['passwordField'];  // DEPRECATED: Use StackMob.User.extend({ passwordField: 'custompasswordfield' });
       /* DEPRECATED METHODS ABOVE */
-      
+
       this.newPasswordField = options['newPasswordField'] || 'new_password';
+
+      this.publicKey = options['publicKey'];
 
       this.apiVersion = options['apiVersion'] || this.DEFAULT_API_VERSION;
 
-      this.publicKey = options['publicKey'];
-      
+      /*
+       * apiURL (DEPRECATED) - Advaanced Users Only.  Use apiDomain instead.
+       * Used to redirect SDK requests to a different URL.
+       *
+       */
       if (typeof options['apiURL'] !== "undefined")
         throw new Error("Error: apiURL has been superseded by apiDomain");
 
-      // Init variable 'apiDomain' should not contain a URL scheme (http:// or https://)
-      // This will be prepended according to 'secure' setting
+      /*
+       * apiDomain - Advanced Users Only. Only set apiDomain to redirect SDK
+       * requests to a different domain.
+       *
+       * Init variable 'apiDomain' should not contain a URL scheme (http:// or https://).
+       * Scheme will be prepended according to 'secure' init setting.
+       */
       var apiDomain = options['apiDomain'];
       if (typeof apiDomain === "string"){
         if (apiDomain.indexOf('http') == 0){
@@ -475,11 +486,36 @@
         }
       }
 
-      this.useRelativePathForAjax = options['useRelativePathForAjax'] || false;
+      /*
+       * useRelativePathForAjax - Advanced Users Only. Use to redirect SDK requests to a
+       * path relative to the current URL.  Will only work for StackMob Hosts that can
+       * properly proxy requests to api.stackmob.com
+       *
+       * HTML5 apps hosted on stackmobapp.com will be set to `true` and use a relative path
+       * automatically.
+       */
+      var isSMHosted = (window.location.hostname.indexOf('.stackmobapp.com') > 0);
+      this.useRelativePathForAjax = options['useRelativePathForAjax'] || isSMHosted;
 
-      this.oauth2targetdomain = options['oauth2targetdomain'] || this.oauth2targetdomain || 'www.stackmob.com';
+      /*
+       * secure - Determine which requests should be done over SSL.
+       * Default the security mode to match the current URL scheme.
+       *
+       * If current page is HTTPS, set to SECURE_ALWAYS.
+       * If current page is HTTP, set to SECURE_NEVER.
+       * Otherwise, set to SECURE_MIXED.
+       * Can be overridden by manually specifying a security mode in init().
+       */
+      if (options['secure']) {
+        this.secure = options['secure'];
+      } else if (window.location.protocol.indexOf("https:") == 0) {
+        this.secure = this.SECURE_ALWAYS;
+      } else if (window.location.protocol.indexOf("http:") == 0) {
+        this.secure = this.SECURE_NEVER;
+      } else {
+        this.secure = this.SECURE_MIXED;
+      }
 
-      this.secure = options['secure'] || this.SECURE_MIXED;
       this.ajax = options['ajax'] || this.ajax;
 
       this.initEnd(options);
@@ -491,7 +527,7 @@
     },
     initEnd : function(options) {
     },
-    
+
     /*
      * Need to modify the options callbacks at all?  do that here.
      * These are placed in methods where Backbone wraps the success/error calls so that
@@ -578,7 +614,7 @@
 
     return scheme + '://';
   }
-  
+
   function _prepareHeaders(method, params, options) {
     options = options || {};
 
@@ -649,7 +685,7 @@
       }
     }
   }
-  
+
   function _prepareAjaxClientParams(params) {
     params = params || {};
     //Prepare 3rd party ajax settings
@@ -722,16 +758,16 @@
 
         try {
           var savedCreds = StackMob.getOAuthCredentials();
-          
+
           /*
            * processLogin can be called by the developer or automatically by refreshSession
            * if by refreshSession, there is no user schema info passed from the options, so fetch it from the local storage if that's the case.'
            */
           var userSchemaInfo = options['stackmob_userschemainfo'] || savedCreds['oauth2.userSchemaInfo']; //get schema info
-          
+
           var loginField = userSchemaInfo['loginField']; //so that we can determine the primary key/login field
           var username = result['stackmob']['user'][loginField]; //figure out username
-          
+
           var creds = StackMob.prepareCredsForSaving(accessToken, refreshToken, macKey, expires, username, userSchemaInfo);
           //...then let's save the OAuth credentials to local storage.
           StackMob.saveOAuthCredentials(creds);
@@ -845,19 +881,19 @@
 
             if(method == 'update') {
               var userSchemaInfo = options['stackmob_userschemainfo'] || StackMob.getOAuthCredentials()['oauth2.userSchemaInfo'];
-              
+
               if (userSchemaInfo) {
                 var passwordField = userSchemaInfo['passwordField'];
                 delete json[passwordField];
               }
-              
+
               _.each(model.getBinaryFields(), function(field) {
                 if (json[field] && json[field].indexOf('http') == 0) {
                   delete json[field];
                 }
               });
             }
-              
+
             if(StackMob.isOAuth2Mode())
               delete json['sm_owner'];
             params['data'] = JSON.stringify(_.extend(json, params['data']));
@@ -900,7 +936,7 @@
       StackMob.makeAPICall(model, params, method, options);
     },
     refreshSession : function(options) {
-      
+
       //Make an ajax call here hitting the refreshToken access point and oncomplete, run whatever was passed in
       var refreshOptions = {};
 
@@ -908,7 +944,7 @@
 
       if(StackMob.hasRefreshToken()) {
         var userSchema = StackMob.getOAuthCredentials()['oauth2.userSchemaInfo'] ? StackMob.getOAuthCredentials()['oauth2.userSchemaInfo']['schemaName'] : StackMob['userSchema'];
-        
+
         //set request call details
         refreshOptions['url'] = _getURLScheme('refreshToken') + this.getBaseURL() + userSchema;
         refreshOptions['contentType'] = 'application/x-www-form-urlencoded';
@@ -976,17 +1012,17 @@
            * But the user's success callback is only expecting the user, so let's deal with that here.
            */
           if(StackMob.isOAuth2Mode() && StackMob.isAccessTokenMethod(method) && result['stackmob']) {
-           
+
             //If we have "stackmob" in the response, that means we're getting stackmob data back.
             //pass the user back to the user's success callback
             result = result['stackmob']['user'];
-            
+
             //When we login, we get the full user object back.  We give the developer the option to either populate the user schema with it or not.
             //If not, then we only populate the username (useful if they log with nothing but a facebook token etc.)  We need the username to test
             //user.isLoggedIn()
             //If we do fully populate, then populate the whole object
             var fullyPopulateUser = options['fullyPopulateUser'] === true;
-             
+
             if (model && model.parse) {
               if (!fullyPopulateUser) {
                 var toAdd = {};
@@ -994,9 +1030,9 @@
                 if (!model.set(toAdd, options)) return false;
               } else {
                 if (!model.set(model.parse(result, options), options)) return false;
-              } 
+              }
             }
-            
+
             success(result);
 
             //trigger a change in the user if we've fully populated the user
@@ -1063,7 +1099,9 @@
       var secureMethods = ['loginWithTempAndSetNewPassword',
                             'createUserWithFacebook',
                             'linkUserWithFacebook',
-                            'unlinkUserFromFacebook'];
+                            'unlinkUserFromFacebook',
+                            'linkUserWithGigya',
+                            'unlinkUserFromGigya'];
       if (StackMob.isAccessTokenMethod(method)) {
         return true;
       } else if (params['isUserCreate'] == true) {
@@ -1082,7 +1120,7 @@
      */
     StackMob.Model = Backbone.Model.extend({
       urlRoot : StackMob.getBaseURL(),
-      
+
       getBinaryFields: function() {
         return this.binaryFields || [];
       },
@@ -1149,7 +1187,6 @@
           StackMob.wrapStackMobCallbacks.call(this, value);
           Backbone.Model.prototype.save.call(this, key, value);
         }
-          
       },
       fetchExpanded : function(depth, options) {
         if(depth < 0 || depth > 3)
@@ -1182,7 +1219,7 @@
         options = options || {};
         options[StackMob.ARRAY_FIELDNAME] = fieldName;
         options[StackMob.ARRAY_VALUES] = values;
-       
+
         StackMob.sync.call(this, 'addRelationship', this, options);
       },
       appendAndSave : function(fieldName, values, options) {
@@ -1273,17 +1310,17 @@
         StackMob.wrapStackMobCallbacks.call(this, newOptions);
         Backbone.Collection.prototype.create.call(this, model, newOptions);
       },
-      
+
       fetch : function(options) {
         StackMob.wrapStackMobCallbacks.call(this, options);
         Backbone.Collection.prototype.fetch.call(this, options);
       },
-      
+
       createAll : function(options) {
         options = options || {};
         return (this.sync || Backbone.sync).call(this, 'create', this, options); 
       },
-      
+
       count : function(stackMobQuery, options) {
         stackMobQuery = stackMobQuery || new StackMob.Collection.Query();
         options = options || {};
@@ -1333,7 +1370,7 @@
       schemaName : StackMob['userSchema'] || StackMob['DEFAULT_LOGIN_SCHEMA'], //StackMob['userSchema'] is deprecated but here for backwards compatibility
       loginField : StackMob['loginField'] || StackMob['DEFAULT_LOGIN_FIELD'],  //StackMob['loginField'] is deprecated but here for backwards compatibility
       passwordField : StackMob['passwordField'] || StackMob['DEFAULT_PASSWORD_FIELD'],  //StackMob['passwordField'] is deprecated but here for backwards compatibility
-      
+
       idAttribute : this.loginField,
 
       getPrimaryKeyField : function() {
@@ -1403,6 +1440,18 @@
         options['stackmob_ongigyaAccessToken'] = StackMob.processLogin;
 
         (this.sync || Backbone.sync).call(this, "gigyaAccessToken", this, options);
+      },
+      linkUserWithGigya : function(gigyaUID, gigyaTimestamp, gigyaSignature, options) {
+        options = options || {};
+        options['data'] = options['data'] || {};
+        _.extend(options['data'], {
+          "gigya_uid" : gigyaUID,
+          "gigya_ts" : gigyaTimestamp,
+          "gigya_sig" : gigyaSignature,
+          "token_type" : 'mac'
+        });
+
+        (this.sync || Backbone.sync).call(this, "linkUserWithGigya", this, options);
       },
       unlinkUserFromGigya : function(options) {
         (this.sync || Backbone.sync).call(this, "unlinkUserFromGigya", this, options);
@@ -1488,7 +1537,7 @@
         };
         (this.sync || Backbone.sync).call(this, "resetPassword", this, options);
       },
-      
+
       sync : function(method, model, options) {
         options = options || {};
         options['stackmob_userschemainfo'] = {
@@ -1911,8 +1960,7 @@
       },
 
       'jquery' : function(model, params, method, options) {
-        
-        
+
         params['beforeSend'] = function(jqXHR, settings) {
           jqXHR.setRequestHeader("Accept", settings['accepts']);
           if(!_.isEmpty(settings['headers'])) {

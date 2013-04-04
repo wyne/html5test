@@ -35,7 +35,7 @@ describe("Unit tests for Authentication", function() {
     runs(function(){
       StackMob.refreshSession.call(StackMob, {
         done: function(model, params, method){
-          expect(params['url']).toEqual("https://api.stackmob.com/user/refreshToken");
+          expect(params['url']).toEqual(window.location.protocol + "//api.stackmob.com/user/refreshToken");
           expect(method).toEqual("refreshToken");
         }
       });

@@ -441,6 +441,9 @@
      * Externally called by user to initialize their StackMob config.
      */
     init : function(options) {
+      // Safeguard in case window is undefined
+      window = window || {location: {hostname:""}};
+
       options = options || {};
 
       // Run stuff before StackMob is initialized.
@@ -495,7 +498,7 @@
        * automatically.
        */
       var isSMHosted = (window.location.hostname.indexOf('.stackmobapp.com') > 0);
-      this.useRelativePathForAjax = options['useRelativePathForAjax'] || isSMHosted;
+      this.useRelativePathForAjax = (typeof options['useRelativePathForAjax'] === "boolean") ? options['useRelativePathForAjax'] : isSMHosted;
 
       /*
        * secure - Determine which requests should be done over SSL.

@@ -641,6 +641,8 @@
       params['headers']['X-StackMob-Proxy-Plain'] = 'stackmob-api';
       // CORS Support
       params['headers']['X-StackMob-API-Key-' + StackMob['publicKey']] = "";
+      params['headers']['X-API-Key-' + StackMob['publicKey']] = "";
+      params['headers']['XKey-' + StackMob['publicKey']] = "";
     } else {
       params['headers']['X-StackMob-Proxy'] = 'stackmob-api';
     }

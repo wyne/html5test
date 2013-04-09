@@ -643,6 +643,10 @@
       params['headers']['X-StackMob-API-Key-' + StackMob['publicKey']] = "";
       params['headers']['X-API-Key-' + StackMob['publicKey']] = "";
       params['headers']['XKey-' + StackMob['publicKey']] = "";
+      params['headers']['XKey-6789' = "";
+      params['headers']['XKey-6789012345' = "";
+      params['headers']['XKey-678901234567890' = "";
+      params['headers']['XKey-67890123456789012345' = "";
     } else {
       params['headers']['X-StackMob-Proxy'] = 'stackmob-api';
     }
